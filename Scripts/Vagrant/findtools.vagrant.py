@@ -35,7 +35,7 @@ corralBinDir = rootDir + "/corral/bin/debug"
 whoopBinDir = rootDir + "/whoop/Binaries"
 
 # path to the directory containing the z3 executable
-z3BinDir = rootDir + "/z3/build"
+z3BinDir = rootDir + "/z3/install/bin"
 
 # path to the directory containing the cvc4 executable
 cvc4BinDir = rootDir + "/cvc4/install/bin"

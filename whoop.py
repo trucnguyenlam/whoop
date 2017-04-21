@@ -128,7 +128,7 @@ clangCoreIncludes = [
                     ]
 clangOtherIncludes = [
                       findtools.smackSrcDir + "/smack",
-                      findtools.whoopDir + "OtherModels/seq1/include/ddverify",
+                      findtools.whoopDir + "/OtherModels/seq1/include/ddverify",
                       findtools.whoopDir + "/OtherModels/seq1/include",
                       findtools.whoopDir + "/OtherModels/seq1/include/linux"
                     ]
@@ -823,8 +823,9 @@ def startToolChain(argv):
     runTool("chauffeur",
              [findtools.chauffeurDir + "/chauffeur"] +
              CommandLineOptions.chauffeurOptions +
-             ["-I" + findtools.llvmLibDir + "/clang/3.4/include"] +
-             [("-I" + str(o)) for o in clangCoreIncludes],
+             ["-I" + findtools.llvmLibDir + "/clang/3.5.2/include"] +
+             [("-I" + str(o)) for o in clangCoreIncludes] +
+             [("-I" + str(o)) for o in CommandLineOptions.includes],
              ErrorCodes.CLANG_ERROR,
              CommandLineOptions.componentTimeout)
   if CommandLineOptions.stopAtRe: return 0
