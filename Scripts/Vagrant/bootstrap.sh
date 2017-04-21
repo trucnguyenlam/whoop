@@ -4,88 +4,89 @@ echo $'\n==================='
 echo $'Getting updates ...'
 echo $'===================\n'
 
-sudo apt-get -y update
-sudo apt-get install -y g++
-sudo apt-get install -y make
-sudo apt-get install -y python-software-properties python
-sudo apt-get install -y automake autoconf
-sudo apt-get install -y libtool libgmp-dev libcln-dev
-sudo apt-get install -y wget git subversion mercurial
-sudo apt-get install -y gettext zlib1g-dev asciidoc libcurl4-openssl-dev
-sudo apt-get install -y git
-
-sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-sudo apt-get -y update
-sudo apt-get install -y gcc-4.9 g++-4.9
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.9
-
 export PROJECT_ROOT=/vagrant
 export BUILD_ROOT=/home/vagrant/whoop
-export CMAKE_VERSION=2.8.8
-export MONO_VERSION=3.12.1
+# export CMAKE_VERSION=2.8.8
+# export MONO_VERSION=3.12.1
 export LLVM_RELEASE=35
-export SMACK_RELEASE=v.1.5.0
-export Z3_RELEASE=z3-4.1.1
+export SMACK_RELEASE=v1.5.0
+export Z3_RELEASE=z3-4.3.2
 export BOOGIE_RELEASE=7f7e70772d04b1c574609a5504c9160ca01aca67
 export CORRAL_RELEASE=3aa62d7425b57295f698c6f47d3ce1910f5f5f8d
 
+# sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+sudo apt-get -y update
+sudo apt-get install -y g++
+sudo apt-get install -y make
+sudo apt-get install -y cmake
+sudo apt-get install -y build-essential
+# sudo apt-get install -y python-software-properties python
+sudo apt-get install -y automake autoconf
+sudo apt-get install -y libtool libgmp-dev libcln-dev
+sudo apt-get install -y git wget subversion mercurial
+sudo apt-get install -y gcc-4.9 g++-4.9
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.9
+sudo apt-get install -y libncurses5-dev
+sudo apt-get install -y gettext zlib1g-dev asciidoc libcurl4-openssl-dev
+sudo apt-get install -y mono-complete
+
 mkdir -p ${BUILD_ROOT}
 
-echo $'\n======================'
-echo $'Getting latest git ...'
-echo $'======================\n'
+# echo $'\n======================'
+# echo $'Getting latest git ...'
+# echo $'======================\n'
 
-cd ${BUILD_ROOT}
-git clone https://github.com/git/git.git
+# cd ${BUILD_ROOT}
+# git clone https://github.com/git/git.git
 
-echo $'\n======================='
-echo $'Building latest git ...'
-echo $'=======================\n'
+# echo $'\n======================='
+# echo $'Building latest git ...'
+# echo $'=======================\n'
 
-cd git
-make configure
-./configure --prefix=/usr
-make all doc
-sudo make install install-doc install-html
+# cd git
+# make configure
+# ./configure --prefix=/usr
+# make all doc
+# sudo make install install-doc install-html
 
-echo $'\n================='
-echo $'Getting CMAKE ...'
-echo $'=================\n'
+# echo $'\n================='
+# echo $'Getting CMAKE ...'
+# echo $'=================\n'
 
-cd ${BUILD_ROOT}
-wget http://www.cmake.org/files/v2.8/cmake-${CMAKE_VERSION}-Linux-i386.tar.gz
+# cd ${BUILD_ROOT}
+# wget http://www.cmake.org/files/v2.8/cmake-${CMAKE_VERSION}-Linux-i386.tar.gz
 
-echo $'\n==================='
-echo $'Unpacking CMAKE ...'
-echo $'===================\n'
+# echo $'\n==================='
+# echo $'Unpacking CMAKE ...'
+# echo $'===================\n'
 
-tar zxvf cmake-${CMAKE_VERSION}-Linux-i386.tar.gz
-rm cmake-${CMAKE_VERSION}-Linux-i386.tar.gz
-export PATH=${BUILD_ROOT}/cmake-${CMAKE_VERSION}-Linux-i386/bin:$PATH
+# tar zxvf cmake-${CMAKE_VERSION}-Linux-i386.tar.gz
+# rm cmake-${CMAKE_VERSION}-Linux-i386.tar.gz
+# export PATH=${BUILD_ROOT}/cmake-${CMAKE_VERSION}-Linux-i386/bin:$PATH
 
-echo $'\n================'
-echo $'Getting MONO ...'
-echo $'================\n'
+# echo $'\n================'
+# echo $'Getting MONO ...'
+# echo $'================\n'
 
-cd ${BUILD_ROOT}
-wget http://download.mono-project.com/sources/mono/mono-${MONO_VERSION}.tar.bz2
+# cd ${BUILD_ROOT}
+# wget http://download.mono-project.com/sources/mono/mono-${MONO_VERSION}.tar.bz2
 
-echo $'\n=================='
-echo $'Unpacking MONO ...'
-echo $'==================\n'
+# echo $'\n=================='
+# echo $'Unpacking MONO ...'
+# echo $'==================\n'
 
-tar jxf mono-${MONO_VERSION}.tar.bz2
-rm mono-${MONO_VERSION}.tar.bz2
+# tar jxf mono-${MONO_VERSION}.tar.bz2
+# rm mono-${MONO_VERSION}.tar.bz2
 
-echo $'\n================='
-echo $'Building MONO ...'
-echo $'=================\n'
+# echo $'\n================='
+# echo $'Building MONO ...'
+# echo $'=================\n'
 
-cd ${BUILD_ROOT}/mono-${MONO_VERSION}
-./configure --prefix=${BUILD_ROOT}/local --with-large-heap=yes --enable-nls=no
-make -j4
-make install
-export PATH=${BUILD_ROOT}/local/bin:$PATH
+# cd ${BUILD_ROOT}/mono-${MONO_VERSION}
+# ./configure --prefix=${BUILD_ROOT}/local --with-large-heap=yes --enable-nls=no
+# make -j8
+# make install
+# export PATH=${BUILD_ROOT}/local/bin:$PATH
 
 echo $'\n================'
 echo $'Getting LLVM ...'
@@ -93,17 +94,33 @@ echo $'================\n'
 
 mkdir -p ${BUILD_ROOT}/llvm_and_clang
 cd ${BUILD_ROOT}/llvm_and_clang
-git clone https://github.com/llvm-mirror/llvm.git src
-cd ${BUILD_ROOT}/llvm_and_clang/src
-git checkout release_${LLVM_RELEASE}
+wget http://releases.llvm.org/3.5.2/llvm-3.5.2.src.tar.xz
+wget http://releases.llvm.org/3.5.2/cfe-3.5.2.src.tar.xz
+wget http://releases.llvm.org/3.5.2/compiler-rt-3.5.2.src.tar.xz
+
+tar xvf llvm-3.5.2.src.tar.xz
+rm llvm-3.5.2.src.tar.xz
+tar xvf cfe-3.5.2.src.tar.xz
+rm cfe-3.5.2.src.tar.xz
+tar xvf compiler-rt-3.5.2.src.tar.xz
+rm compiler-rt-3.5.2.src.tar.xz
+mv llvm-3.5.2.src src
 cd ${BUILD_ROOT}/llvm_and_clang/src/tools
-git clone https://github.com/llvm-mirror/clang.git clang
-cd ${BUILD_ROOT}/llvm_and_clang/src/tools/clang
-git checkout release_${LLVM_RELEASE}
+mv ../../cfe-3.5.2.src clang
 cd ${BUILD_ROOT}/llvm_and_clang/src/projects
-git clone https://github.com/llvm-mirror/compiler-rt.git compiler-rt
-cd ${BUILD_ROOT}/llvm_and_clang/src/projects/compiler-rt
-git checkout release_${LLVM_RELEASE}
+mv ../../compiler-rt-3.5.2.src compiler-rt
+
+# cd ${BUILD_ROOT}/llvm_and_clang
+# git clone https://github.com/llvm-mirror/llvm.git src
+# cd ${BUILD_ROOT}/llvm_and_clang/src
+# git checkout release_${LLVM_RELEASE}
+# git clone https://github.com/llvm-mirror/clang.git clang
+# cd ${BUILD_ROOT}/llvm_and_clang/src/tools/clang
+# git checkout release_${LLVM_RELEASE}
+# cd ${BUILD_ROOT}/llvm_and_clang/src/projects
+# git clone https://github.com/llvm-mirror/compiler-rt.git compiler-rt
+# cd ${BUILD_ROOT}/llvm_and_clang/src/projects/compiler-rt
+# git checkout release_${LLVM_RELEASE}
 
 echo $'\n================='
 echo $'Building LLVM ...'
@@ -112,7 +129,7 @@ echo $'=================\n'
 mkdir -p ${BUILD_ROOT}/llvm_and_clang/build
 cd ${BUILD_ROOT}/llvm_and_clang/build
 cmake -D CMAKE_BUILD_TYPE=Release -D LLVM_TARGETS_TO_BUILD="X86" ../src
-make -j4
+make -j8
 
 echo $'\n================='
 echo $'Getting SMACK ...'
@@ -130,7 +147,7 @@ echo $'==================\n'
 mkdir -p ${BUILD_ROOT}/smack/build
 cd ${BUILD_ROOT}/smack/build
 cmake -D LLVM_CONFIG=${BUILD_ROOT}/llvm_and_clang/build/bin -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=${BUILD_ROOT}/smack/install ../src
-make -j4
+make -j8
 make install
 
 echo $'\n=============='
@@ -149,9 +166,11 @@ echo $'===============\n'
 cd ${BUILD_ROOT}/z3
 python scripts/mk_make.py --prefix=${BUILD_ROOT}/z3/install
 cd ${BUILD_ROOT}/z3/build
-make -j4
+make -j8
 make install
 cd ${BUILD_ROOT}/z3/install/bin
+ln -s z3 z3.exe
+cd ${BUILD_ROOT}/z3/build/
 ln -s z3 z3.exe
 
 echo $'\n=================='
@@ -167,14 +186,16 @@ echo $'\n==================='
 echo $'Building BOOGIE ...'
 echo $'===================\n'
 
-xbuild /p:TargetFrameworkProfile="" /p:Configuration=Debug Boogie.sln
+# wget https://nuget.org/nuget.exe
+# mono ./nuget.exe restore Source/Boogie.sln
+xbuild /p:TargetFrameworkProfile="" /p:Configuration=Debug Source/Boogie.sln
 
 echo $'\n=================='
 echo $'Getting CORRAL ...'
 echo $'==================\n'
 
 cd ${BUILD_ROOT}
-git clone https://github.com/pdeligia/corral.git
+git clone https://github.com/boogie-org/corral.git
 cd ${BUILD_ROOT}/corral
 git checkout ${CORRAL_RELEASE}
 
@@ -218,7 +239,7 @@ echo $'======================\n'
 mkdir -p ${BUILD_ROOT}/chauffeur/build
 cd ${BUILD_ROOT}/chauffeur/build
 cmake -D LLVM_CONFIG=${BUILD_ROOT}/llvm_and_clang/build/bin -D CMAKE_BUILD_TYPE=Release ../src
-make -j4
+make -j8
 
 echo $'\n================='
 echo $'Getting WHOOP ...'
@@ -240,6 +261,17 @@ echo $'=====================\n'
 
 cp /home/vagrant/whoop/whoop/Scripts/Vagrant/findtools.vagrant.py findtools.py
 
+cd /home/vagrant/
+echo "# Manually set environment variables" >> .bashrc
+echo "export PATH=\$PATH:${BUILD_ROOT}/llvm_and_clang/build/bin:$BUILD_ROOT/smack/install/bin" >> .bashrc
+echo "export BOOGIE=\"mono ${BUILD_ROOT}/boogie/Binaries/Boogie.exe\"" >> .bashrc
+echo "export CORRAL=\"mono ${BUILD_ROOT}/corral/bin/Debug/corral.exe\"" >> .bashrc
+
+chown -R vagrant ${BUILD_ROOT}
+chgrp -R vagrant ${BUILD_ROOT}
+
 echo $'\n========'
 echo $'Done ...'
 echo $'========\n'
+
+
